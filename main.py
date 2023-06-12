@@ -41,21 +41,20 @@ def updatedata(userID, url):
     return "success"
 
 
-# model = tf.saved_model.load('./tf2-save', signatures={
-#         tf.saved_model.DEFAULT_SERVING_SIGNATURE_DEF_KEY: concrete_funct})
+model = tf.keras.models.load_model('./tf2-save')
 
 
-# def predict(location):
-#     img = image.load_img(location, target_size=(64,64))
-#     test_image = image.img_to_array(img)
-#     test_image = np.expand_dims(test_image, axis = 0)
-#     result = model.predict(test_image)
-#     prediction = ''
-#     if result[0][0] == 1:
-#         prediction = 'Recyclable'
-#     else:
-#         prediction = 'Organic'
-#     return prediction
+def predict(location):
+    img = image.load_img(location, target_size=(64,64))
+    test_image = image.img_to_array(img)
+    test_image = np.expand_dims(test_image, axis = 0)
+    result = model.predict(test_image)
+    prediction = ''
+    if result[0][0] == 1:
+        prediction = 'Recyclable'
+    else:
+        prediction = 'Organic'
+    return prediction
 
 
 @app.get("/")
@@ -71,6 +70,17 @@ def upload(input: UploadFile = File(...)):
     with open(savefile, "wb") as buffer:
         shutil.copyfileobj(input.file, buffer)
     result = uploadtogcs(savefile)
+    os.remove(savefile)
+    return str(result)
+
+@app.post("/predict")
+def upload(input: UploadFile = File(...)):
+    print(input.filename)
+    print(type(input.filename))
+    savefile = input.filename
+    with open(savefile, "wb") as buffer:
+        shutil.copyfileobj(input.file, buffer)
+    result = predict(savefile)
     os.remove(savefile)
     return str(result)
 
