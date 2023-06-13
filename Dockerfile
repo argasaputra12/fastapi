@@ -1,17 +1,19 @@
-# 
-FROM python:3.9
+FROM python:3.10.10
 
-# 
-WORKDIR /code
+WORKDIR /app
 
-# 
-COPY ./requirements.txt /code/requirements.txt
+RUN pip install --upgrade pip
 
-# 
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+COPY requirements.txt requirements.txt
 
-# 
-COPY ./main.py /code/
+RUN pip install -r requirements.txt
 
-# 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
+COPY . .
+
+EXPOSE 8080
+
+ENV PYTHONUNBUFFERED=1
+
+# CMD ["python", "-u", "main.py"]
+
+CMD ["uvicorn", "--host", "0.0.0.0", "--port", "8080", "main:app"]
