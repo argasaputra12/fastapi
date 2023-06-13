@@ -6,3 +6,5 @@ tensorflow==2.12.0
 uvicorn==0.22.0
 wrapt==1.14.1
 google.cloud
+python-multipart
+Pillow
