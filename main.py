@@ -50,7 +50,7 @@ def predict(location):
     test_image = np.expand_dims(test_image, axis = 0)
     result = model.predict(test_image)
     prediction = ''
-    if result[0][0] == 1:
+    if result[0][0] > 0.5:
         prediction = 'Recyclable'
     else:
         prediction = 'Organic'
